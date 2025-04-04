@@ -183,7 +183,6 @@ This Hub-and-Spoke model, centered around the RevenueEngine, provides a clear an
 ## 🙏 Acknowledgements
 
 - Solana & Anchor communities for the powerful blockchain and development framework.
-- [Add any other specific libraries, tools, or individuals you wish to thank]
 
 ## 📄 License
 

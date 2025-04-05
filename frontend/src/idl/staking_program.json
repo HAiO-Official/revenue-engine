@@ -1,0 +1,473 @@
+{
+  "address": "DNEYpF5jMNjpxAPNYQhPkpuaxWGudBTvyrmKDkNQdZMP",
+  "metadata": {
+    "name": "staking_program",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Handles NFT Staking and Reward Claims"
+  },
+  "instructions": [
+    {
+      "name": "claim_rewards",
+      "discriminator": [
+        4,
+        144,
+        132,
+        71,
+        116,
+        23,
+        151,
+        80
+      ],
+      "accounts": [
+        {
+          "name": "user_wallet",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "nft_stake_state"
+          ]
+        },
+        {
+          "name": "user_haio_account",
+          "writable": true
+        },
+        {
+          "name": "engine_state"
+        },
+        {
+          "name": "nft_stake_state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  110,
+                  102,
+                  116,
+                  95,
+                  115,
+                  116,
+                  97,
+                  107,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user_wallet"
+              },
+              {
+                "kind": "account",
+                "path": "nft_stake_state.nft_mint",
+                "account": "NftStakeState"
+              }
+            ]
+          }
+        },
+        {
+          "name": "engine_state_loader"
+        },
+        {
+          "name": "reward_pool_pda",
+          "writable": true
+        },
+        {
+          "name": "reward_pool_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  119,
+                  97,
+                  114,
+                  100,
+                  95,
+                  112,
+                  111,
+                  111,
+                  108,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121,
+                  95,
+                  115,
+                  101,
+                  101,
+                  100
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "stake",
+      "discriminator": [
+        206,
+        176,
+        202,
+        18,
+        200,
+        209,
+        179,
+        108
+      ],
+      "accounts": [
+        {
+          "name": "user_wallet",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "nft_mint"
+        },
+        {
+          "name": "engine_state",
+          "writable": true
+        },
+        {
+          "name": "revenue_engine_program",
+          "address": "AUdeJW2sdUErNTqyRvSYcYZJE72yURxLxQ9GeEVayLqq"
+        },
+        {
+          "name": "nft_stake_state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  110,
+                  102,
+                  116,
+                  95,
+                  115,
+                  116,
+                  97,
+                  107,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user_wallet"
+              },
+              {
+                "kind": "account",
+                "path": "nft_mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "staking_program_executable",
+          "address": "DNEYpF5jMNjpxAPNYQhPkpuaxWGudBTvyrmKDkNQdZMP"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "unstake",
+      "discriminator": [
+        90,
+        95,
+        107,
+        42,
+        205,
+        124,
+        50,
+        225
+      ],
+      "accounts": [
+        {
+          "name": "user_wallet",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "nft_stake_state"
+          ]
+        },
+        {
+          "name": "nft_mint",
+          "relations": [
+            "nft_stake_state"
+          ]
+        },
+        {
+          "name": "user_haio_account",
+          "writable": true
+        },
+        {
+          "name": "engine_state",
+          "writable": true
+        },
+        {
+          "name": "revenue_engine_program",
+          "address": "AUdeJW2sdUErNTqyRvSYcYZJE72yURxLxQ9GeEVayLqq"
+        },
+        {
+          "name": "nft_stake_state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  110,
+                  102,
+                  116,
+                  95,
+                  115,
+                  116,
+                  97,
+                  107,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user_wallet"
+              },
+              {
+                "kind": "account",
+                "path": "nft_mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "engine_state_loader"
+        },
+        {
+          "name": "reward_pool_pda",
+          "writable": true
+        },
+        {
+          "name": "reward_pool_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  119,
+                  97,
+                  114,
+                  100,
+                  95,
+                  112,
+                  111,
+                  111,
+                  108,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121,
+                  95,
+                  115,
+                  101,
+                  101,
+                  100
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "staking_program_executable",
+          "address": "DNEYpF5jMNjpxAPNYQhPkpuaxWGudBTvyrmKDkNQdZMP"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "EngineState",
+      "discriminator": [
+        26,
+        2,
+        24,
+        225,
+        247,
+        210,
+        96,
+        161
+      ]
+    },
+    {
+      "name": "NftStakeState",
+      "discriminator": [
+        39,
+        158,
+        75,
+        12,
+        85,
+        110,
+        107,
+        48
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "NftNotStaked",
+      "msg": "NFT is not staked or does not belong to the user."
+    },
+    {
+      "code": 6001,
+      "name": "Unauthorized",
+      "msg": "Caller is not authorized to perform this action."
+    },
+    {
+      "code": 6002,
+      "name": "NoRewardsToClaim",
+      "msg": "No rewards available to claim."
+    },
+    {
+      "code": 6003,
+      "name": "CalculationError",
+      "msg": "Calculation overflow error."
+    }
+  ],
+  "types": [
+    {
+      "name": "EngineState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "revenue_safe",
+            "type": "pubkey"
+          },
+          {
+            "name": "reward_pool_pda",
+            "type": "pubkey"
+          },
+          {
+            "name": "dao_treasury_pda",
+            "type": "pubkey"
+          },
+          {
+            "name": "developer_treasury_pda",
+            "type": "pubkey"
+          },
+          {
+            "name": "staking_ratio_bps",
+            "type": "u16"
+          },
+          {
+            "name": "dao_ratio_bps",
+            "type": "u16"
+          },
+          {
+            "name": "developer_ratio_bps",
+            "type": "u16"
+          },
+          {
+            "name": "total_staked_amount",
+            "type": "u64"
+          },
+          {
+            "name": "reward_per_token_cumulative",
+            "type": "u128"
+          },
+          {
+            "name": "last_distribution_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "NftStakeState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user_wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "nft_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "staked_amount",
+            "type": "u64"
+          },
+          {
+            "name": "reward_debt",
+            "type": "u128"
+          },
+          {
+            "name": "last_staked_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "is_staked",
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "engine_state_ref",
+            "type": "pubkey"
+          }
+        ]
+      }
+    }
+  ]
+}

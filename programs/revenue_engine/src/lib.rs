@@ -4,11 +4,11 @@ use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Token, TokenAccount, Transfer};
 use crate::state::EngineState;
 
-declare_id!("E2KG7u7hZnRPVF56hc3hpqMKnBiBUWVgwbqpHJNQWmNV");
+declare_id!("AUdeJW2sdUErNTqyRvSYcYZJE72yURxLxQ9GeEVayLqq");
 
 const PRECISION: u128 = 1_000_000_000_000; // 10^12
 
-const STAKING_PROGRAM_ID_STR: &str = "EWmrkAfChNnuhCm5nbfwZMwuhn3PN8nF4bfTX9GuyDdQ";
+const STAKING_PROGRAM_ID_STR: &str = "DNEYpF5jMNjpxAPNYQhPkpuaxWGudBTvyrmKDkNQdZMP";
 
 #[program]
 pub mod revenue_engine {
@@ -242,7 +242,7 @@ pub struct UpdateTotalStaked<'info> {
     #[account(mut, has_one = authority)]
     pub engine_state: Account<'info, EngineState>,
     pub authority: Signer<'info>,
- }
+}
 
 
 #[error_code]

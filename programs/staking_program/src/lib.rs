@@ -8,7 +8,7 @@ use anchor_spl::token::{self, Mint, Token, TokenAccount, Transfer};
 use revenue_engine::program::RevenueEngine;
 use revenue_engine::state::EngineState;
 
-declare_id!("EWmrkAfChNnuhCm5nbfwZMwuhn3PN8nF4bfTX9GuyDdQ");
+declare_id!("DNEYpF5jMNjpxAPNYQhPkpuaxWGudBTvyrmKDkNQdZMP");
 
 const PRECISION: u128 = 1_000_000_000_000;
 

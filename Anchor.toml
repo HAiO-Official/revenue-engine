@@ -6,22 +6,22 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-revenue_engine = "E2KG7u7hZnRPVF56hc3hpqMKnBiBUWVgwbqpHJNQWmNV"
-mock_swap_program = "7GM2yrPoFCBta5j5KxzqLU2xPAs2sEZbrYD4HnNVvLBp"
-staking_program = "EWmrkAfChNnuhCm5nbfwZMwuhn3PN8nF4bfTX9GuyDdQ"
+revenue_engine = "DNEYpF5jMNjpxAPNYQhPkpuaxWGudBTvyrmKDkNQdZMP"
+mock_swap_program = "G9gP6qjaZcAyKaCzszcvABkd5UUorfnFe9PjnRkm7qKS"
+staking_program = "DNEYpF5jMNjpxAPNYQhPkpuaxWGudBTvyrmKDkNQdZMP"
 
 [programs.devnet]
-revenue_engine = "E2KG7u7hZnRPVF56hc3hpqMKnBiBUWVgwbqpHJNQWmNV"
-mock_swap_program = "7GM2yrPoFCBta5j5KxzqLU2xPAs2sEZbrYD4HnNVvLBp"
-staking_program = "EWmrkAfChNnuhCm5nbfwZMwuhn3PN8nF4bfTX9GuyDdQ"
+revenue_engine = "9NJ5YRHFmX8CCbsjfueBVxnFTgi2FGrkEu2yjMyTHpoB"
+mock_swap_program = "2DFGw43xgCpr5mJoBPGphdZPBWjDpiaHPRWPGfenxJ2y"
+staking_program = "GkvVXqtEkmEUJdnrXxA7KBdjC7rGtP1mrCFGpdCMoT8i"
 
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "localnet"
-wallet = "~/.config/solana/id.json"
+cluster = "devnet"
+wallet = "./keypairs/id.json"
 
 [scripts]
 test = "npx ts-mocha -p ./tsconfig.json --timeout 1000000 'tests/**/*.ts'"

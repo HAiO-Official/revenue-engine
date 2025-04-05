@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, Token, TokenAccount, Transfer};
 
-declare_id!("7GM2yrPoFCBta5j5KxzqLU2xPAs2sEZbrYD4HnNVvLBp");
+declare_id!("G9gP6qjaZcAyKaCzszcvABkd5UUorfnFe9PjnRkm7qKS");
 
 const HAIO_PER_USDC: u64 = 50;
 const ATH_PER_USDC: u64 = 1;

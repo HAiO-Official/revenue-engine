@@ -1,8 +1,10 @@
 {
   "license": "ISC",
   "scripts": {
-    "build": "anchor build && anchor deploy",
-    "lint": "cargo fmt --check && cargo clippy --fix"
+    "copy-types": "mkdir -p app/src/types && cp target/types/*.ts app/src/types/ && cp target/types/*.ts frontend/src/types/ && cp target/idl/*.json frontend/src/idl/",
+    "build": "anchor build && anchor deploy && yarn copy-types && npx ts-node scripts/init.ts",
+    "lint:fix": "prettier */*.js \"*/**/*{.js,.ts}\" -w",
+    "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check"
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.31.0",

@@ -1,0 +1,23 @@
+[package]
+name = "staking_program"
+version = "0.1.0"
+description = "Handles NFT Staking and Reward Claims"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "staking_program"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build", "revenue_engine/idl-build"] 
+
+[dependencies]
+anchor-lang = "0.31.0"
+anchor-spl = "0.31.0"
+revenue_engine = { path = "../revenue_engine", features = ["cpi"] }
+solana-program = "2.1.0" 

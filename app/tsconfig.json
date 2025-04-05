@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": false, // 일단 false 유지 (해커톤용)
+    "esModuleInterop": true, // **반드시 true**
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true, // true 권장 (Node.js는 대소문자 구분)
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "allowJs": true,
+    "baseUrl": ".", // 경로 설정을 위해 추가
+    "paths": { // 타입 경로 문제 해결 시도 (선택적)
+      "*": ["node_modules/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
+}

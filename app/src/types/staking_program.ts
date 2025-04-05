@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/staking_program.json`.
  */
 export type StakingProgram = {
-  "address": "35KNDioNGVjFfT2prnRvh4A1yoGRk8xv3ncX7hHRfck4",
+  "address": "DNEYpF5jMNjpxAPNYQhPkpuaxWGudBTvyrmKDkNQdZMP",
   "metadata": {
     "name": "stakingProgram",
     "version": "0.1.0",
@@ -151,7 +151,7 @@ export type StakingProgram = {
         },
         {
           "name": "revenueEngineProgram",
-          "address": "Hx52oBqJk1ps4kiqCPEfpzcQte2ggrYrXyffmKXGLF8Q"
+          "address": "AUdeJW2sdUErNTqyRvSYcYZJE72yURxLxQ9GeEVayLqq"
         },
         {
           "name": "nftStakeState",
@@ -185,7 +185,7 @@ export type StakingProgram = {
         },
         {
           "name": "stakingProgramExecutable",
-          "address": "35KNDioNGVjFfT2prnRvh4A1yoGRk8xv3ncX7hHRfck4"
+          "address": "DNEYpF5jMNjpxAPNYQhPkpuaxWGudBTvyrmKDkNQdZMP"
         },
         {
           "name": "systemProgram",
@@ -239,7 +239,7 @@ export type StakingProgram = {
         },
         {
           "name": "revenueEngineProgram",
-          "address": "Hx52oBqJk1ps4kiqCPEfpzcQte2ggrYrXyffmKXGLF8Q"
+          "address": "AUdeJW2sdUErNTqyRvSYcYZJE72yURxLxQ9GeEVayLqq"
         },
         {
           "name": "nftStakeState",
@@ -318,7 +318,7 @@ export type StakingProgram = {
         },
         {
           "name": "stakingProgramExecutable",
-          "address": "35KNDioNGVjFfT2prnRvh4A1yoGRk8xv3ncX7hHRfck4"
+          "address": "DNEYpF5jMNjpxAPNYQhPkpuaxWGudBTvyrmKDkNQdZMP"
         },
         {
           "name": "tokenProgram",

@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/revenue_engine.json`.
  */
 export type RevenueEngine = {
-  "address": "Hx52oBqJk1ps4kiqCPEfpzcQte2ggrYrXyffmKXGLF8Q",
+  "address": "AUdeJW2sdUErNTqyRvSYcYZJE72yURxLxQ9GeEVayLqq",
   "metadata": {
     "name": "revenueEngine",
     "version": "0.1.0",

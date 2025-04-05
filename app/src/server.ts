@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { getStatus, getRecentLogs, initializeDatabase } from './db';
-import { runAgentCycleOnce, transferUsdcFromAdminToOp, formatTokenAmount } from './agent';
+import { runAgentCycleOnce, transferUsdcFromExternalToOp, formatTokenAmount } from './agent';
 
 const app = express();
 const port = process.env.PORT || 3001; // API 서버 포트
@@ -45,8 +45,8 @@ app.post('/api/simulate-and-run', async (req, res) => {
             return res.status(400).json({ success: false, message: "Invalid amount specified." });
         }
 
-        // 2. Admin -> Op Wallet으로 USDC 전송
-        const transferTxId = await transferUsdcFromAdminToOp(amountLamports);
+        // 2. External -> Op Wallet으로 USDC 전송
+        const transferTxId = await transferUsdcFromExternalToOp(amountLamports);
         console.log(`[API] USDC Transfer completed: ${transferTxId}`);
 
         // 3. Agent 사이클 1회 실행 호출 (비동기 실행, 완료 기다리지 않음)

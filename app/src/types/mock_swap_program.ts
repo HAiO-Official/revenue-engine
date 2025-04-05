@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/mock_swap_program.json`.
  */
 export type MockSwapProgram = {
-  "address": "G9Ndbh3YmVFK7xEh67GqiCej5v8fj1Ei1sw3iWxmtEr",
+  "address": "G9gP6qjaZcAyKaCzszcvABkd5UUorfnFe9PjnRkm7qKS",
   "metadata": {
     "name": "mockSwapProgram",
     "version": "0.1.0",

@@ -17,7 +17,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 // --- 환경 변수 로드 및 검증 ---
 const {
-    RPC_URL, ADMIN_KEYPAIR_PATH, OPERATIONAL_WALLET_KEYPAIR_PATH,
+    RPC_URL, ADMIN_KEYPAIR_PATH, OPERATIONAL_WALLET_KEYPAIR_PATH,EXTERNAL_WALLET_KEYPAIR_PATH,
     USDC_MINT_ADDRESS, HAIO_MINT_ADDRESS,
     REVENUE_ENGINE_PDA, REVENUE_SAFE_ATA,
     MOCK_USDC_VAULT_ATA, MOCK_HAIO_VAULT_ATA,
@@ -29,7 +29,7 @@ const {
 } = process.env;
 
 const requiredEnvVars = [
-    'RPC_URL', 'ADMIN_KEYPAIR_PATH', 'OPERATIONAL_WALLET_KEYPAIR_PATH',
+    'RPC_URL', 'ADMIN_KEYPAIR_PATH', 'OPERATIONAL_WALLET_KEYPAIR_PATH', 'EXTERNAL_WALLET_KEYPAIR_PATH',
     'USDC_MINT_ADDRESS', 'HAIO_MINT_ADDRESS', 'REVENUE_ENGINE_PDA',
     'REVENUE_SAFE_ATA', 'MOCK_USDC_VAULT_ATA', 'MOCK_HAIO_VAULT_ATA',
     'USDC_THRESHOLD_LAMPORTS', 'CHECK_INTERVAL_MS', 'BURN_RATIO_BPS',
@@ -43,7 +43,7 @@ for (const varName of requiredEnvVars) {
 }
 
 // --- 상수 및 타입 변환 ---
-const connection = new Connection(RPC_URL!, 'finalized');
+const connection = new Connection(RPC_URL!, 'confirmed');
 const usdcMint = new PublicKey(USDC_MINT_ADDRESS!);
 const haioMint = new PublicKey(HAIO_MINT_ADDRESS!);
 const revenueEnginePda = new PublicKey(REVENUE_ENGINE_PDA!);
@@ -75,12 +75,12 @@ function loadKeypair(keypairPath: string): Keypair {
 }
 const adminKeypair = loadKeypair(ADMIN_KEYPAIR_PATH!);
 const operationalWallet = loadKeypair(OPERATIONAL_WALLET_KEYPAIR_PATH!);
-
+const externalWallet = loadKeypair(EXTERNAL_WALLET_KEYPAIR_PATH!);
 console.log("Agent Operational Wallet:", operationalWallet.publicKey.toBase58());
 console.log("Agent using Admin Wallet for Mock Swap:", adminKeypair.publicKey.toBase58());
-
+console.log("Agent using External Wallet for USDC Transfer:", externalWallet.publicKey.toBase58());
 // --- Anchor 설정 ---
-const opWalletProvider = new AnchorProvider(connection, new Wallet(operationalWallet), { commitment: 'finalized' });
+const opWalletProvider = new AnchorProvider(connection, new Wallet(operationalWallet), { commitment: 'confirmed' });
 
 // --- IDL 및 프로그램 인스턴스 ---
 let revenueEngineProgram: Program<RevenueEngine>;
@@ -146,38 +146,42 @@ async function updateWalletBalancesInDB() {
     }
 }
 
-export async function transferUsdcFromAdminToOp(amount: bigint): Promise<string> {
-    console.log(`[ADMIN ACTION] Transferring ${formatTokenAmount(amount, USDC_DECIMALS)} USDC from Admin to Op Wallet...`);
-    await addLog(`Admin sending ${formatTokenAmount(amount, USDC_DECIMALS)} USDC to Op Wallet...`, 'process'); // DB Log
+export async function transferUsdcFromExternalToOp(amount: bigint): Promise<string> {
+    console.log(`[EXTERNAL ACTION] Transferring ${formatTokenAmount(amount, USDC_DECIMALS)} USDC from External to Op Wallet...`);
+    await addLog(`External Wallet sending ${formatTokenAmount(amount, USDC_DECIMALS)} USDC to Op Wallet...`, 'process');
 
     try {
-        const adminUsdcAta = await getAssociatedTokenAddress(usdcMint, adminKeypair.publicKey);
+        const externalUsdcAta = await getAssociatedTokenAddress(usdcMint, externalWallet.publicKey);
         const opWalletUsdcAta = await getAssociatedTokenAddress(usdcMint, operationalWallet.publicKey);
 
-        // 계정 존재 확인 (init에서 생성됨 가정)
-        await getAccount(connection, adminUsdcAta);
-        await getAccount(connection, opWalletUsdcAta);
+        // 보내는 사람(External)의 잔액 확인
+        const sourceAccountInfo = await getAccount(connection, externalUsdcAta);
+        if (sourceAccountInfo.amount < amount) {
+            throw new Error(`Insufficient USDC balance in External Wallet. Has: ${formatTokenAmount(sourceAccountInfo.amount, USDC_DECIMALS)}, Needs: ${formatTokenAmount(amount, USDC_DECIMALS)}`);
+        }
+        await getAccount(connection, opWalletUsdcAta); // 받는 계정 존재 확인
 
         const txSignature = await transfer(
             connection,
-            adminKeypair,          // Payer & Source Authority
-            adminUsdcAta,          // Source ATA
-            opWalletUsdcAta,       // Destination ATA
-            adminKeypair.publicKey, // Authority of source
+            externalWallet,        // Payer & Source Authority (External Wallet으로 변경)
+            externalUsdcAta,       // Source ATA (External Wallet의 USDC ATA)
+            opWalletUsdcAta,       // Destination ATA (Op Wallet의 USDC ATA)
+            externalWallet.publicKey, // Authority of source (External Wallet으로 변경)
             amount,
             [],
-            { commitment: 'finalized' }
+            { commitment: 'confirmed' }
         );
-        await connection.confirmTransaction(txSignature, 'finalized');
-        console.log(`   ✅ [ADMIN ACTION] USDC Transfer successful! Tx: ${txSignature}`);
-        await addLog(`Admin sent USDC successfully.`, 'success', txSignature); // DB Log
+        await connection.confirmTransaction(txSignature, 'confirmed');
+        console.log(`   ✅ [EXTERNAL ACTION] USDC Transfer successful! Tx: ${txSignature}`);
+        await addLog(`External Wallet sent USDC successfully.`, 'success', txSignature);
         return txSignature;
     } catch (error: any) {
-        console.error("   ❌ [ADMIN ACTION] USDC Transfer failed:", error);
-        await addLog(`Admin failed to send USDC: ${error.message}`, 'error'); // DB Log
-        throw error; // 에러를 다시 던져 API 응답에서 처리하도록 함
+        console.error("   ❌ [EXTERNAL ACTION] USDC Transfer failed:", error);
+        await addLog(`External Wallet failed to send USDC: ${error.message}`, 'error');
+        throw error; // 에러를 다시 던져 API 응답 등에서 처리하도록 함
     }
 }
+
 
 
 
@@ -200,7 +204,7 @@ export async function runAgentCycleOnce() {
         let opWalletUsdcBalance = await getTokenBalance(usdcMint, operationalWallet.publicKey);
         await updateWalletBalancesInDB(); // 초기 잔액 DB 업데이트
         const usdcBalanceFormatted = formatTokenAmount(opWalletUsdcBalance, USDC_DECIMALS);
-        console.log(` Current USDC Balance: ${usdcBalanceFormatted} USDC`);
+        console.log(`Current USDC Balance: ${usdcBalanceFormatted} USDC`);
         await addLog(`Current USDC Balance: ${usdcBalanceFormatted} USDC`, "info");
 
         if (opWalletUsdcBalance >= usdcThreshold) {
@@ -239,8 +243,8 @@ export async function runAgentCycleOnce() {
                         .swapUsdcForAth(new anchor.BN(usdcForAthPayment.toString()))
                         .accounts(accounts)
                         .signers([operationalWallet, adminKeypair])
-                        .rpc({ commitment: 'finalized', skipPreflight: true });
-                    await connection.confirmTransaction(swapAthTxId, 'finalized');
+                        .rpc({ commitment: 'confirmed', skipPreflight: true });
+                    await connection.confirmTransaction(swapAthTxId, 'confirmed');
                     await addLog(`ATH Swap successful!`, "success", swapAthTxId);
                     await updateWalletBalancesInDB(); // 잔액 업데이트
 
@@ -259,9 +263,9 @@ export async function runAgentCycleOnce() {
                             await getAccount(connection, destAthAta); // 존재 확인
 
                             paymentTxId = await transfer(
-                                connection, operationalWallet, sourceAthAta, destAthAta, operationalWallet, opWalletAthBalance, [], { commitment: 'finalized' }
+                                connection, operationalWallet, sourceAthAta, destAthAta, operationalWallet, opWalletAthBalance, [], { commitment: 'confirmed' }
                             );
-                            await connection.confirmTransaction(paymentTxId, 'finalized');
+                            await connection.confirmTransaction(paymentTxId, 'confirmed');
                             await addLog(`ATH sent to Aethir wallet!`, "success", paymentTxId);
                             opWalletUsdcBalance -= usdcForAthPayment; // 메모리상 차감 (다음 스왑 계산 위해)
                             await updateWalletBalancesInDB(); // 잔액 업데이트
@@ -309,8 +313,8 @@ export async function runAgentCycleOnce() {
                          .swapUsdcForHaio(new anchor.BN(amountToSwapHaio.toString()))
                          .accounts(accounts)
                          .signers([operationalWallet, adminKeypair])
-                         .rpc({ commitment: 'finalized', skipPreflight: true });
-                     await connection.confirmTransaction(swapHaioTxId, 'finalized');
+                         .rpc({ commitment: 'confirmed', skipPreflight: true });
+                     await connection.confirmTransaction(swapHaioTxId, 'confirmed');
                      await addLog(`HAiO Swap successful!`, "success", swapHaioTxId);
                      opWalletUsdcBalance -= amountToSwapHaio; // 메모리상 차감
                      await updateWalletBalancesInDB(); // 잔액 업데이트
@@ -344,9 +348,9 @@ export async function runAgentCycleOnce() {
                         const opWalletHaioAta = await getAssociatedTokenAddress(haioMint, operationalWallet.publicKey);
                         burnTxId = await burn(
                             connection, operationalWallet, opWalletHaioAta, haioMint,
-                            operationalWallet, amountToBurn, [], { commitment: 'finalized' }
+                            operationalWallet, amountToBurn, [], { commitment: 'confirmed' }
                         );
-                        await connection.confirmTransaction(burnTxId, 'finalized');
+                        await connection.confirmTransaction(burnTxId, 'confirmed');
                         await addLog(`Burn successful!`, "success", burnTxId);
                         await updateWalletBalancesInDB(); // 잔액 업데이트
                     } catch (burnError: any) {
@@ -372,9 +376,9 @@ export async function runAgentCycleOnce() {
 
                         transferTxId = await transfer(
                             connection, operationalWallet, opWalletHaioAta, revenueSafe,
-                            operationalWallet, amountToTransfer, [], { commitment: 'finalized' }
+                            operationalWallet, amountToTransfer, [], { commitment: 'confirmed' }
                         );
-                        await connection.confirmTransaction(transferTxId, 'finalized');
+                        await connection.confirmTransaction(transferTxId, 'confirmed');
                         await addLog(`Transfer to Revenue Safe successful!`, "success", transferTxId);
                         await updateWalletBalancesInDB(); // 잔액 업데이트 (Op Wallet HAiO 0 됨)
 
@@ -396,8 +400,8 @@ export async function runAgentCycleOnce() {
                              distributeTxId = await revenueEngineProgram.methods
                                 .distributeRevenue()
                                 .accounts(distributeAccounts)
-                                .rpc({ commitment: 'finalized', skipPreflight: true });
-                             await connection.confirmTransaction(distributeTxId, 'finalized');
+                                .rpc({ commitment: 'confirmed', skipPreflight: true });
+                             await connection.confirmTransaction(distributeTxId, 'confirmed');
                              await addLog(`distribute_revenue called successfully!`, "success", distributeTxId);
                              // 분배 후 Revenue Safe 잔액은 0이 되지만, Op Wallet 잔액은 영향 없음
                         } catch (distributeError: any) {

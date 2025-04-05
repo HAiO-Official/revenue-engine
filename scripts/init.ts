@@ -18,7 +18,7 @@ import { StakingProgram } from "../target/types/staking_program";
 import { MockSwapProgram } from "../target/types/mock_swap_program";
 
 // --- 설정 값 ---
-const RPC_URL = "https://api.devnet.solana.com";
+const RPC_URL = "http://localhost:8899";
 const USDC_DECIMALS = 6;
 const HAIO_DECIMALS = 9;
 const NFT_DECIMALS = 0;
@@ -138,57 +138,57 @@ async function main() {
     anchor.setProvider(provider);
 
     // --- 초기 SOL 에어드랍 ---
-    // console.log("\nAirdropping SOL if needed...");
-    // await Promise.all([
-    //     (async () => {
-    //         if (await connection.getBalance(adminKeypair.publicKey) < 0.5 * LAMPORTS_PER_SOL) {
-    //             console.log(` Airdropping 2 SOL to Admin Wallet...`);
-    //             await connection.requestAirdrop(adminKeypair.publicKey, 2 * LAMPORTS_PER_SOL).then(sig => connection.confirmTransaction(sig, 'finalized'));
-    //             console.log("  Admin Airdrop finalized.");
-    //         } else { console.log(" Admin Wallet has sufficient SOL."); }
-    //     })(),
-    //     (async () => {
-    //         if (await connection.getBalance(opWalletKeypair.publicKey) < 0.5 * LAMPORTS_PER_SOL) {
-    //             console.log(` Airdropping 2 SOL to Operational Wallet...`);
-    //              await connection.requestAirdrop(opWalletKeypair.publicKey, 2 * LAMPORTS_PER_SOL).then(sig => connection.confirmTransaction(sig, 'finalized'));
-    //             console.log("  Operational Wallet Airdrop finalized.");
-    //         } else { console.log(" Operational Wallet has sufficient SOL."); }
-    //     })(),        (async () => { // External Wallet 에어드랍 추가
-    //         if (await connection.getBalance(externalWalletKeypair.publicKey) < 0.5 * LAMPORTS_PER_SOL) {
-    //             console.log(` Airdropping 2 SOL to External Wallet...`);
-    //             await connection.requestAirdrop(externalWalletKeypair.publicKey, 2 * LAMPORTS_PER_SOL).then(sig => connection.confirmTransaction(sig, 'finalized'));
-    //             console.log("  External Wallet Airdrop finalized.");
-    //         } else { console.log(" External Wallet has sufficient SOL."); }
-    //     })(),
-    //     (async () => { // User Wallet 에어드랍 추가
-    //         if (await connection.getBalance(userWalletKeypair.publicKey) < 0.5 * LAMPORTS_PER_SOL) {
-    //             console.log(` Airdropping 2 SOL to User Wallet...`);
-    //             await connection.requestAirdrop(userWalletKeypair.publicKey, 2 * LAMPORTS_PER_SOL).then(sig => connection.confirmTransaction(sig, 'finalized'));
-    //             console.log("  User Wallet Airdrop finalized.");
-    //         } else { console.log(" User Wallet has sufficient SOL."); }
-    //     })(),
-    //     (async () => {
-    //         if (await connection.getBalance(aethirPaymentWalletKeypair.publicKey) < 0.1 * LAMPORTS_PER_SOL) {
-    //             console.log(` Airdropping 1 SOL to Aethir Payment Wallet...`);
-    //             await connection.requestAirdrop(aethirPaymentWalletKeypair.publicKey, 1 * LAMPORTS_PER_SOL).then(sig => connection.confirmTransaction(sig, 'finalized'));
-    //             console.log("  Aethir Payment Wallet Airdrop finalized.");
-    //         } else { console.log(" Aethir Payment Wallet has sufficient SOL."); }
-    //     })(),    
-    // (async () => { // DAO Treasury Authority 에어드랍 추가
-    //     if (await connection.getBalance(revenueEngineDaoTreasuryKeypair.publicKey) < 0.1 * LAMPORTS_PER_SOL) {
-    //         console.log(` Airdropping 0.5 SOL to DAO Treasury Authority Wallet...`);
-    //         await connection.requestAirdrop(revenueEngineDaoTreasuryKeypair.publicKey, 0.5 * LAMPORTS_PER_SOL).then(sig => connection.confirmTransaction(sig, 'finalized'));
-    //         console.log("  DAO Treasury Authority Airdrop finalized.");
-    //     } else { console.log(" DAO Treasury Authority Wallet has sufficient SOL."); }
-    // })(),
-    // (async () => { // Developer Treasury Authority 에어드랍 추가
-    //     if (await connection.getBalance(revenueEngineDeveloperTreasuryKeypair.publicKey) < 0.1 * LAMPORTS_PER_SOL) {
-    //         console.log(` Airdropping 0.5 SOL to Developer Treasury Authority Wallet...`);
-    //         await connection.requestAirdrop(revenueEngineDeveloperTreasuryKeypair.publicKey, 0.5 * LAMPORTS_PER_SOL).then(sig => connection.confirmTransaction(sig, 'finalized'));
-    //         console.log("  Developer Treasury Authority Airdrop finalized.");
-    //     } else { console.log(" Developer Treasury Authority Wallet has sufficient SOL."); }
-    // })()
-    // ]).catch(err => console.warn(" Airdrop failed (rate limit?):", err?.message || err));
+    console.log("\nAirdropping SOL if needed...");
+    await Promise.all([
+        (async () => {
+            if (await connection.getBalance(adminKeypair.publicKey) < 0.5 * LAMPORTS_PER_SOL) {
+                console.log(` Airdropping 2 SOL to Admin Wallet...`);
+                await connection.requestAirdrop(adminKeypair.publicKey, 2 * LAMPORTS_PER_SOL).then(sig => connection.confirmTransaction(sig, 'finalized'));
+                console.log("  Admin Airdrop finalized.");
+            } else { console.log(" Admin Wallet has sufficient SOL."); }
+        })(),
+        (async () => {
+            if (await connection.getBalance(opWalletKeypair.publicKey) < 0.5 * LAMPORTS_PER_SOL) {
+                console.log(` Airdropping 2 SOL to Operational Wallet...`);
+                 await connection.requestAirdrop(opWalletKeypair.publicKey, 2 * LAMPORTS_PER_SOL).then(sig => connection.confirmTransaction(sig, 'finalized'));
+                console.log("  Operational Wallet Airdrop finalized.");
+            } else { console.log(" Operational Wallet has sufficient SOL."); }
+        })(),        (async () => { // External Wallet 에어드랍 추가
+            if (await connection.getBalance(externalWalletKeypair.publicKey) < 0.5 * LAMPORTS_PER_SOL) {
+                console.log(` Airdropping 2 SOL to External Wallet...`);
+                await connection.requestAirdrop(externalWalletKeypair.publicKey, 2 * LAMPORTS_PER_SOL).then(sig => connection.confirmTransaction(sig, 'finalized'));
+                console.log("  External Wallet Airdrop finalized.");
+            } else { console.log(" External Wallet has sufficient SOL."); }
+        })(),
+        (async () => { // User Wallet 에어드랍 추가
+            if (await connection.getBalance(userWalletKeypair.publicKey) < 0.5 * LAMPORTS_PER_SOL) {
+                console.log(` Airdropping 2 SOL to User Wallet...`);
+                await connection.requestAirdrop(userWalletKeypair.publicKey, 2 * LAMPORTS_PER_SOL).then(sig => connection.confirmTransaction(sig, 'finalized'));
+                console.log("  User Wallet Airdrop finalized.");
+            } else { console.log(" User Wallet has sufficient SOL."); }
+        })(),
+        (async () => {
+            if (await connection.getBalance(aethirPaymentWalletKeypair.publicKey) < 0.1 * LAMPORTS_PER_SOL) {
+                console.log(` Airdropping 1 SOL to Aethir Payment Wallet...`);
+                await connection.requestAirdrop(aethirPaymentWalletKeypair.publicKey, 1 * LAMPORTS_PER_SOL).then(sig => connection.confirmTransaction(sig, 'finalized'));
+                console.log("  Aethir Payment Wallet Airdrop finalized.");
+            } else { console.log(" Aethir Payment Wallet has sufficient SOL."); }
+        })(),    
+    (async () => { // DAO Treasury Authority 에어드랍 추가
+        if (await connection.getBalance(revenueEngineDaoTreasuryKeypair.publicKey) < 0.1 * LAMPORTS_PER_SOL) {
+            console.log(` Airdropping 0.5 SOL to DAO Treasury Authority Wallet...`);
+            await connection.requestAirdrop(revenueEngineDaoTreasuryKeypair.publicKey, 0.5 * LAMPORTS_PER_SOL).then(sig => connection.confirmTransaction(sig, 'finalized'));
+            console.log("  DAO Treasury Authority Airdrop finalized.");
+        } else { console.log(" DAO Treasury Authority Wallet has sufficient SOL."); }
+    })(),
+    (async () => { // Developer Treasury Authority 에어드랍 추가
+        if (await connection.getBalance(revenueEngineDeveloperTreasuryKeypair.publicKey) < 0.1 * LAMPORTS_PER_SOL) {
+            console.log(` Airdropping 0.5 SOL to Developer Treasury Authority Wallet...`);
+            await connection.requestAirdrop(revenueEngineDeveloperTreasuryKeypair.publicKey, 0.5 * LAMPORTS_PER_SOL).then(sig => connection.confirmTransaction(sig, 'finalized'));
+            console.log("  Developer Treasury Authority Airdrop finalized.");
+        } else { console.log(" Developer Treasury Authority Wallet has sufficient SOL."); }
+    })()
+    ]).catch(err => console.warn(" Airdrop failed (rate limit?):", err?.message || err));
 
 
     // --- 프로그램 클라이언트 로드 ---

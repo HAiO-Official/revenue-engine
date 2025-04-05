@@ -20,7 +20,7 @@ staking_program = "GkvVXqtEkmEUJdnrXxA7KBdjC7rGtP1mrCFGpdCMoT8i"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "devnet"
+cluster = "localnet"
 wallet = "./keypairs/id.json"
 
 [scripts]

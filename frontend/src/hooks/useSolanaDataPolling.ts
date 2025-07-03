@@ -1,9 +1,9 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'; // useMemo 추가
+import { useState, useEffect, useCallback, useMemo } from 'react'; // useMemo added
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { getAssociatedTokenAddress, getAccount, unpackAccount } from '@solana/spl-token';
 import * as anchor from '@coral-xyz/anchor';
-// 수정: lib/solana에서 PublicKey 생성 함수들 제거하고, 상수/Provider/Program 생성 함수만 가져옴
+// Modified: Removed PublicKey creation functions from lib/solana, only import constants/Provider/Program creation functions
 import {
     getAnchorProvider,
     getRevenueEngineProgram,
@@ -11,7 +11,7 @@ import {
     HAIO_DECIMALS,
     USDC_DECIMALS,
     PRECISION,
-    // 프로그램 ID 가져오는 함수도 필요 없음 (Program 생성 시 provider만 필요)
+    // Program ID getter function also not needed (only provider needed for Program creation)
 } from '../lib/solana.ts';
 import { formatTokenAmount } from '../lib/utils.ts';
 
@@ -43,12 +43,12 @@ export const useSolanaDataPolling = (intervalMs: number = 10000) => {
     const revenueEngineProgram = useMemo(() => provider ? getRevenueEngineProgram(provider) : null, [provider]);
     const stakingProgram = useMemo(() => provider ? getStakingProgram(provider) : null, [provider]);
 
-    // --- PublicKey 객체들을 useMemo를 사용하여 훅 내부에서 생성 ---
+    // --- Create PublicKey objects inside hook using useMemo ---
     const revenueEnginePDA = useMemo(() => {
         const pda = process.env.REACT_APP_REVENUE_ENGINE_PDA;
         if (!pda) { console.error("Missing REACT_APP_REVENUE_ENGINE_PDA env var"); return null; }
         try { return new PublicKey(pda); } catch (e) { console.error("Invalid REVENUE_ENGINE_PDA:", e); return null; }
-    }, []); // 빈 배열: 컴포넌트 마운트 시 한 번만 생성
+    }, []); // Empty array: create only once on component mount
 
     const haioMint = useMemo(() => {
         const mint = process.env.REACT_APP_HAIO_MINT_ADDRESS;
@@ -94,17 +94,17 @@ export const useSolanaDataPolling = (intervalMs: number = 10000) => {
 
 
     const fetchData = useCallback(async () => {
-        // --- 이제 PublicKey 객체들이 null일 수 있으므로 사용 전에 확인 ---
+        // --- Now PublicKey objects can be null, so check before use ---
         if (!publicKey || !connection || !revenueEngineProgram || !stakingProgram || !provider ||
             !revenueEnginePDA || !haioMint || !usdcMint || !demoNftMint || !rewardPoolATA ||
-            !daoTreasuryPDA || !devTreasuryPDA || !revenueSafeATA) // 모든 필요한 Pubkey 확인
+            !daoTreasuryPDA || !devTreasuryPDA || !revenueSafeATA) // Check all required Pubkeys
         {
-            // console.warn("Polling dependencies not ready"); // 너무 자주 로깅될 수 있음
+            // console.warn("Polling dependencies not ready"); // May log too frequently
             return;
         }
         // setIsLoading(true);
         setError(null);
-        console.log("--- [useSolanaDataPolling] Starting Data Fetch ---"); // 시작 로그
+        console.log("--- [useSolanaDataPolling] Starting Data Fetch ---"); // Start log
 
         let fetchedRevenueEngine: any = null;
         let fetchedStakeData: any = null;
@@ -113,7 +113,7 @@ export const useSolanaDataPolling = (intervalMs: number = 10000) => {
         let userNftOwned = false;
 
         try {
-            // 1. EngineState 로드
+            // 1. Load EngineState
             try {
                 console.log("Fetching EngineState from:", revenueEnginePDA.toBase58());
                 fetchedRevenueEngine = await revenueEngineProgram.account.engineState.fetch(revenueEnginePDA);
@@ -121,15 +121,15 @@ export const useSolanaDataPolling = (intervalMs: number = 10000) => {
 
             } catch (e) { console.warn("Could not fetch EngineState:", e); fetchedRevenueEngine = null; }
 
-            // 2. 사용자 잔액 및 NFT 소유 확인
+            // 2. Check user balance and NFT ownership
             console.log("Fetching user balances and NFT status for:", publicKey.toBase58());
 
              const [userHaioAtaAddress, userUsdcAtaAddress, userNftAtaAddress] = await Promise.all([
-                 getAssociatedTokenAddress(haioMint, publicKey), // 변수 사용
-                 getAssociatedTokenAddress(usdcMint, publicKey), // 변수 사용
-                 getAssociatedTokenAddress(demoNftMint, publicKey) // 변수 사용
+                 getAssociatedTokenAddress(haioMint, publicKey), // Use variable
+                 getAssociatedTokenAddress(usdcMint, publicKey), // Use variable
+                 getAssociatedTokenAddress(demoNftMint, publicKey) // Use variable
              ]);
-             // ... (이하 잔액 및 소유 확인 로직 동일) ...
+             // ... (remaining balance and ownership check logic same) ...
              const [haioBalInfo, usdcBalInfo, nftAccountInfo] = await Promise.allSettled([
                  connection.getAccountInfo(userHaioAtaAddress),
                  connection.getAccountInfo(userUsdcAtaAddress),
@@ -143,9 +143,9 @@ export const useSolanaDataPolling = (intervalMs: number = 10000) => {
              console.log(`User Balances: HAiO=${userHaioBalanceStr}, USDC=${userUsdcBalanceStr}, OwnsNFT=${userNftOwned}`);
 
 
-            // 3. 내 스테이킹 정보 로드
+            // 3. Load my staking information
             const [nftStakePDA, _] = PublicKey.findProgramAddressSync(
-                [Buffer.from("nft_stake"), publicKey.toBuffer(), demoNftMint.toBuffer()], // 변수 사용
+                [Buffer.from("nft_stake"), publicKey.toBuffer(), demoNftMint.toBuffer()], // Use variable
                 stakingProgram.programId
             );
             console.log("Fetching NftStakeState from:", nftStakePDA.toBase58());
@@ -157,9 +157,9 @@ export const useSolanaDataPolling = (intervalMs: number = 10000) => {
 
             } catch (e) { fetchedStakeData = null; }
 
-            // 4. 클레임 가능 보상 계산 (동일)
+            // 4. Calculate claimable rewards (same)
             if (currentlyStaked && fetchedRevenueEngine && fetchedStakeData) {
-                // ... 계산 로직 ...
+                // ... calculation logic ...
                 const currentCumulative = fetchedRevenueEngine.rewardPerTokenCumulative as anchor.BN;
                 const lastDebt = fetchedStakeData.rewardDebt as anchor.BN;
                 const stakedAmount = fetchedStakeData.stakedAmount as anchor.BN;
@@ -170,7 +170,7 @@ export const useSolanaDataPolling = (intervalMs: number = 10000) => {
                 }
             }
 
-            // 5. PDA 잔액 로드 (각 단계별 로그 추가)
+            // 5. Load PDA balances (add step-by-step logging)
             console.log("Fetching PDA balances...");
             const pdaAddresses = {
                 revenueSafe: revenueSafeATA,
@@ -194,12 +194,12 @@ export const useSolanaDataPolling = (intervalMs: number = 10000) => {
                 console.log(" Fetching DAO Treasury balance from:", pdaAddresses.dao.toBase58());
                 const daoInfo = await getAccount(connection, pdaAddresses.dao).catch(() => null);
                 pdaBalancesData.dao = daoInfo ? formatTokenAmount(daoInfo.amount, HAIO_DECIMALS) : "0.00";
-                 console.log(`  DAO Treasury Balance: ${pdaBalancesData.dao}`); // 로그 추가
+                 console.log(`  DAO Treasury Balance: ${pdaBalancesData.dao}`); // Add log
 
                 console.log(" Fetching Dev Treasury balance from:", pdaAddresses.dev.toBase58());
                 const devInfo = await getAccount(connection, pdaAddresses.dev).catch(() => null);
                 pdaBalancesData.dev = devInfo ? formatTokenAmount(devInfo.amount, HAIO_DECIMALS) : "0.00";
-                 console.log(`  Dev Treasury Balance: ${pdaBalancesData.dev}`); // 로그 추가
+                 console.log(`  Dev Treasury Balance: ${pdaBalancesData.dev}`); // Add log
 
             } catch (pdaError) {
                 console.error("Error fetching PDA balances:", pdaError);
@@ -208,11 +208,11 @@ export const useSolanaDataPolling = (intervalMs: number = 10000) => {
 
 
 
-            // 최종 데이터 객체 생성 (동일)
+            // Create final data object (same)
             const newData: SolanaData = {
                 userHaioBalance: userHaioBalanceStr,
                 userUsdcBalance: userUsdcBalanceStr,
-                userNfts: userNftOwned ? [demoNftMint] : [], // 변수 사용
+                userNfts: userNftOwned ? [demoNftMint] : [], // Use variable
                 revenueEngineInfo: fetchedRevenueEngine,
                 myStakeInfo: fetchedStakeData,
                 isStaked: currentlyStaked,
@@ -221,20 +221,20 @@ export const useSolanaDataPolling = (intervalMs: number = 10000) => {
             };
 
             setData(newData);
-            console.log("--- [useSolanaDataPolling] Data Fetch Complete ---", newData); // 최종 데이터 로그
+            console.log("--- [useSolanaDataPolling] Data Fetch Complete ---", newData); // Final data log
 
         } catch (error: any) {
             console.error("Error in Solana data polling:", error);
             setError(`Data polling failed: ${error.message}`);
         } finally {
-            // setIsLoading(false); // 폴링 시 로딩 제거
+            // setIsLoading(false); // Remove loading during polling
         }
-    // --- 의존성 배열에 생성된 PublicKey 변수들 추가 ---
+    // --- Add created PublicKey variables to dependency array ---
     }, [publicKey, connection, revenueEngineProgram, stakingProgram, provider,
         revenueEnginePDA, haioMint, usdcMint, demoNftMint, rewardPoolATA,
         daoTreasuryPDA, devTreasuryPDA, revenueSafeATA]);
 
-    // 폴링 설정 (동일)
+    // Polling setup (same)
     useEffect(() => {
         if (publicKey && connection) {
             fetchData();

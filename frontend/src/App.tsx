@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import './App.css'; // App.css 임포트
+import './App.css'; // App.css import
 
-// 페이지 컴포넌트 임포트 (아직 파일만 생성된 상태)
+// Page component imports (files only created at this stage)
 import AgentMonitorPage from './pages/AgentMonitorPage.tsx';
 import GlobalDashboardPage from './pages/GlobalDashboardPage.tsx';
 import StakingClaimPage from './pages/StakingClaimPage.tsx';
@@ -21,7 +21,7 @@ function App() {
             <Link to="/" style={linkStyle}>Staking & Claim</Link>
             <Link to="/dashboard" style={linkStyle}>Global Dashboard</Link>
             <Link to="/agent" style={linkStyle}>Agent Monitor</Link>
-            <WalletMultiButton style={{ /* 기존 버튼 스타일 */ }} />
+            <WalletMultiButton style={{ /* existing button style */ }} />
           </nav>
         </header>
 
@@ -35,15 +35,15 @@ function App() {
   );
 }
 
-// 간단한 링크 스타일
+// Simple link style
 const linkStyle = {
   textDecoration: 'none',
   color: '#5a2e91',
-  fontWeight: 'bold' as 'bold', // 타입 명시
+  fontWeight: 'bold' as 'bold', // Type specification
   padding: '5px 10px',
   borderRadius: '4px',
   transition: 'background-color 0.2s ease'
 };
-// TODO: 활성 링크 스타일 추가
+// TODO: Add active link style
 
-export default App; // App 컴포넌트 export
+export default App; // App component export

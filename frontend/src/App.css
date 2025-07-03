@@ -1,6 +1,4 @@
-/* src/App.css */
-
-/* body와 html에 기본 높이 설정 (필요시) */
+/* Basic height settings for body and html (if needed) */
 html, body, #root {
   height: 100%;
   margin: 0;
@@ -13,41 +11,41 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f4f4f4; /* 전체 배경색 */
+  background-color: #f4f4f4; /* Overall background color */
   color: #333;
 }
 
-/* .container 스타일 수정 */
+/* Modified .container style */
 .container {
-  /* max-width: 1200px; 최대 너비는 유지 */
+  /* max-width: 1200px; Keep maximum width */
   width: 100%;
-  min-height: calc(100vh - 40px); /* 화면 높이에서 상하 여백(padding) 제외 */
-  margin: 20px auto; /* 상하 20px, 좌우 자동 마진 */
+  min-height: calc(100vh - 40px); /* Screen height minus top/bottom padding */
+  margin: 20px auto; /* 20px top/bottom, auto left/right margin */
   background: #fff;
-  padding: 20px; /* 내부 여백 */
+  padding: 20px; /* Internal padding */
   border-radius: 8px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-  display: flex; /* 내부 요소를 flexbox로 관리 (헤더/컨텐츠 분리 용이) */
-  flex-direction: column; /* 세로 방향 배치 */
+  display: flex; /* Manage internal elements with flexbox (easy header/content separation) */
+  flex-direction: column; /* Vertical arrangement */
 }
 
-/* 헤더 스타일 */
-header { /* App.tsx의 <header> 태그 */
+/* Header style */
+header { /* <header> tag in App.tsx */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px; /* 헤더와 컨텐츠 사이 간격 */
-  padding-bottom: 15px; /* 헤더 하단 여백 */
-  border-bottom: 2px solid #eee; /* 헤더 구분선 */
-  flex-shrink: 0; /* 헤더 높이가 줄어들지 않도록 */
+  margin-bottom: 20px; /* Gap between header and content */
+  padding-bottom: 15px; /* Header bottom padding */
+  border-bottom: 2px solid #eee; /* Header separator line */
+  flex-shrink: 0; /* Prevent header height from shrinking */
 }
 
 header h1 {
   display: flex;
   align-items: center;
-  color: #007aff; /* 변경된 색상 */
+  color: #007aff; /* Changed color */
   margin-bottom: 0;
-  margin-top: 0; /* 추가 */
+  margin-top: 0; /* Added */
 }
 
 header h1 img {
@@ -62,7 +60,7 @@ header nav {
 
 header nav a {
   text-decoration: none;
-  color: #007aff; /* 변경된 색상 */
+  color: #007aff; /* Changed color */
   font-weight: bold;
   padding: 5px 10px;
   border-radius: 4px;
@@ -73,18 +71,18 @@ header nav a:hover, header nav a.active {
     background-color: #e6f2ff;
 }
 
-/* 페이지 컨텐츠 영역 스타일 (선택적) */
-/* App.tsx의 <Routes>를 감싸는 div에 이 클래스 적용 가능 */
+/* Page content area style (optional) */
+/* Can apply this class to div wrapping <Routes> in App.tsx */
 .page-content {
-    flex-grow: 1; /* 남은 공간을 모두 차지하도록 */
-    /* 필요시 추가 스타일 */
+    flex-grow: 1; /* Take up all remaining space */
+    /* Additional styles if needed */
 }
 
 
-/* --- 나머지 스타일 (section, grid, card, button 등) --- */
-/* 이전 답변에서 제공된 상세 스타일 유지 */
+/* --- Remaining styles (section, grid, card, button, etc.) --- */
+/* Keep detailed styles provided in previous answer */
 
-/* 공통 섹션 스타일 */
+/* Common section style */
 .section {
   margin-bottom: 35px;
   padding: 25px;
@@ -98,10 +96,10 @@ header nav a:hover, header nav a.active {
   margin-top: 0;
   margin-bottom: 20px;
   font-size: 1.4em;
-  color: #007aff; /* 변경된 색상 */
+  color: #007aff; /* Changed color */
 }
 
-/* 그리드 및 카드 스타일 */
+/* Grid and card styles */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -135,7 +133,7 @@ header nav a:hover, header nav a.active {
 .value {
   font-size: 1.3em;
   font-weight: bold;
-  color: #007aff; /* 변경된 색상 */
+  color: #007aff; /* Changed color */
   display: inline-block;
   line-height: 1.2;
 }
@@ -145,15 +143,15 @@ header nav a:hover, header nav a.active {
   margin-left: 4px;
 }
 .highlight {
-  background-color: #e6f2ff !important; /* 변경된 색상에 맞게 */
+  background-color: #e6f2ff !important; /* Match changed color */
   transition: background-color 0.1s ease-out;
 }
 
 
-/* 버튼 및 입력 요소 스타일 */
+/* Button and input element styles */
 button {
-  background-color: #007aff; /* 변경된 색상 */
-  color: white; /* 글자색 하얀색 */
+  background-color: #007aff; /* Changed color */
+  color: white; /* White text color */
   padding: 9px 16px;
   border: none;
   border-radius: 4px;
@@ -193,7 +191,7 @@ select {
   margin-left: 2px;
 }
 
-/* 로그 스타일 */
+/* Log styles */
 .log-container {
   background: #f8f9fa;
   padding: 15px;
@@ -230,7 +228,7 @@ select {
   flex-grow: 1;
 }
 .tx-link {
-  color: #007aff; /* 변경된 색상 */
+  color: #007aff; /* Changed color */
   text-decoration: none;
   font-size: 0.9em;
   margin-left: 10px;
@@ -245,9 +243,9 @@ select {
 .status-error { color: #dc3545; }
 
 
-/* Wallet Adapter Button 스타일 오버라이드 */
+/* Wallet Adapter Button style override */
 .wallet-adapter-button-trigger {
-  background-color: #007aff !important; /* 변경된 색상 */
+  background-color: #007aff !important; /* Changed color */
   color: white !important;
   font-weight: bold !important;
   padding: 10px 20px !important;
@@ -259,7 +257,7 @@ select {
 .wallet-adapter-button-trigger:hover {
     background-color: #005ecb !important;
 }
-/* WalletModal 버튼 스타일 조정 */
+/* WalletModal button style adjustment */
 .wallet-adapter-modal-list li button {
     background-color: #f8f9fa !important;
     color: #333 !important;
@@ -269,7 +267,7 @@ select {
 }
 
 
-/* 로딩 오버레이 스타일 */
+/* Loading overlay style */
 .loading-overlay {
   position: fixed;
   top: 0;
@@ -281,7 +279,7 @@ select {
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  color: #007aff; /* 변경된 색상 */
+  color: #007aff; /* Changed color */
   font-size: 1.2em;
   font-weight: bold;
   text-align: center;
@@ -293,7 +291,7 @@ select {
     height: 40px;
     margin-left: 15px;
     border: 4px solid #ccc;
-    border-top-color: #007aff; /* 변경된 색상 */
+    border-top-color: #007aff; /* Changed color */
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }

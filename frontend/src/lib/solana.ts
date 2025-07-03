@@ -1,7 +1,7 @@
 import { AnchorProvider, BN, Program, Wallet } from '@coral-xyz/anchor';
 import { Connection, PublicKey, Cluster } from '@solana/web3.js';
 
-// IDL 및 타입 임포트
+// IDL and type imports
 import revenueEngineIdl from '../idl/revenue_engine.json';
 import stakingIdl from '../idl/staking_program.json';
 import mockSwapIdl from '../idl/mock_swap_program.json';
@@ -9,9 +9,9 @@ import { RevenueEngine } from '../types/revenue_engine';
 import { StakingProgram } from '../types/staking_program';
 import { MockSwapProgram } from '../types/mock_swap_program';
 
-// --- PublicKey 생성을 함수 내부로 이동 ---
+// --- Move PublicKey creation inside functions ---
 
-// 프로그램 ID 가져오기 함수
+// Program ID getter functions
 export const getRevenueEngineProgramId = (): PublicKey => {
     const programId = process.env.REACT_APP_REVENUE_ENGINE_PROGRAM_ID;
     if (!programId) throw new Error("Missing REACT_APP_REVENUE_ENGINE_PROGRAM_ID env var");
@@ -30,7 +30,7 @@ export const getMockSwapProgramId = (): PublicKey => {
     return new PublicKey(programId);
 };
 
-// 주요 계정 주소 가져오기 함수 (필요한 것들만 추가)
+// Main account address getter functions (only add necessary ones)
 export const getRevenueEnginePDA = (): PublicKey => {
     const pda = process.env.REACT_APP_REVENUE_ENGINE_PDA;
     if (!pda) throw new Error("Missing REACT_APP_REVENUE_ENGINE_PDA env var");
@@ -86,27 +86,27 @@ export const getUsdcMint = (): PublicKey => {
 };
 
 
-// Anchor Provider 생성 함수 (동일)
+// Anchor Provider creation function (same)
 export const getAnchorProvider = (connection: Connection, wallet: any): AnchorProvider | null => {
     if (!wallet?.adapter) return null;
     // @ts-ignore
     return new AnchorProvider(connection, wallet.adapter, { commitment: 'confirmed' });
 };
 
-// 프로그램 인스턴스 생성 함수 (프로그램 ID를 인자로 받도록 수정)
+// Program instance creation functions (modified to receive program ID as argument)
 export const getRevenueEngineProgram = (provider: AnchorProvider): Program<RevenueEngine> => {
-    return new Program<RevenueEngine>(revenueEngineIdl as any, provider); // ID 함수 호출
+    return new Program<RevenueEngine>(revenueEngineIdl as any, provider); // Call ID function
 };
 
 export const getStakingProgram = (provider: AnchorProvider): Program<StakingProgram> => {
-    return new Program<StakingProgram>(stakingIdl as any, provider); // ID 함수 호출
+    return new Program<StakingProgram>(stakingIdl as any, provider); // Call ID function
 };
 
 export const getMockSwapProgram = (provider: AnchorProvider): Program<MockSwapProgram> => {
-    return new Program<MockSwapProgram>(mockSwapIdl as any, provider); // ID 함수 호출
+    return new Program<MockSwapProgram>(mockSwapIdl as any, provider); // Call ID function
 };
 
-// 기타 Solana 관련 유틸리티 (상수 정의)
+// Other Solana related utilities (constant definitions)
 export const HAIO_DECIMALS = 9;
 export const USDC_DECIMALS = 6;
 export const ATH_DECIMALS = 9;

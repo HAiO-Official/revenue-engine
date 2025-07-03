@@ -227,9 +227,8 @@ pub struct UnstakeNft<'info> {
     #[account(mut)]
     pub user_haio_account: Account<'info, TokenAccount>,
 
-    /// CHECK: Engine State Account. Marked mut for CPI call. Owner check done in handler.
+    /// CHECK: Engine State Account. Marked mut for CPI call. Owner verification added
     #[account(mut, owner = REVENUE_ENGINE_PROGRAM_ID, address = nft_stake_state.engine_state_ref)]
-    // Owner 검증 추가
     pub engine_state: AccountInfo<'info>,
 
     #[account(address = REVENUE_ENGINE_PROGRAM_ID)]

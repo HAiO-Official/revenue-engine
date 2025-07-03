@@ -15,7 +15,7 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
-// Wallet Adapter 설정
+// Wallet Adapter configuration
 const network = process.env.REACT_APP_RPC_URL || clusterApiUrl('devnet');
 const wallets = [
     new PhantomWalletAdapter()

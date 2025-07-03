@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../App.css'; // 전역 CSS 사용
+import '../../App.css'; // Use global CSS
 
 interface InfoCardProps {
     title: string;

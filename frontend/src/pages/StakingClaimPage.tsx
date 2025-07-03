@@ -1,4 +1,3 @@
-// src/pages/StakingClaimPage.tsx (수정 완료)
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import '../App.css';
 
@@ -10,9 +9,9 @@ import { TOKEN_PROGRAM_ID, getAssociatedTokenAddress, getAccount, createTransfer
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 
-// Hooks, Libs, Components 임포트
+// Hooks, Libs, Components imports
 import { useSolanaDataPolling, SolanaData } from '../hooks/useSolanaDataPolling.ts';
-// 수정: 필요한 모든 함수/상수 임포트
+// Modified: Import all required functions/constants
 import {
     getAnchorProvider,
     getStakingProgram,
@@ -20,11 +19,11 @@ import {
     getRevenueEnginePDA,
     getRewardPoolATA,
     getHaioMint,
-    getUsdcMint, // 추가
+    getUsdcMint, // Added
     getDemoNftMint,
-    getOpWalletAddress, // 추가
-    getStakingProgramId, // 추가
-    getRevenueEngineProgramId, // 추가
+    getOpWalletAddress, // Added
+    getStakingProgramId, // Added
+    getRevenueEngineProgramId, // Added
     HAIO_DECIMALS,
     USDC_DECIMALS,
     PRECISION
@@ -41,10 +40,10 @@ const StakingClaimPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [usdcAmountToSend, setUsdcAmountToSend] = useState<string>("50");
     const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || "http://localhost:3001";
-    // Solana 데이터 폴링 훅 사용
+    // Use Solana data polling hook
     const { data: solanaData, isLoading: _isDataLoading, error: _dataError, refetch: refetchData } = useSolanaDataPolling(10000);
 
-    // 로그 업데이트 함수 (동일)
+    // Log update function (same)
     const updateLogs = useCallback((newLog: string, status: 'info' | 'success' | 'error' | 'process' = 'info', txId?: string) => {
         const timestamp = new Date().toLocaleTimeString();
         let icon = 'ℹ️';
@@ -55,12 +54,12 @@ const StakingClaimPage = () => {
         setLogs(prevLogs => [logMessage, ...prevLogs.slice(0, 99)]);
     }, []);
 
-    // Anchor Provider 및 프로그램 인스턴스 (동일)
+    // Anchor Provider and program instances (same)
     const provider = useMemo(() => getAnchorProvider(connection, wallet), [connection, wallet]);
     const stakingProgram = useMemo(() => provider ? getStakingProgram(provider) : null, [provider]);
     const revenueEngineProgram = useMemo(() => provider ? getRevenueEngineProgram(provider) : null, [provider]);
 
-     // 파생된 상태 (UI 표시용)
+     // Derived state (for UI display)
      const userHaioBalance = solanaData?.userHaioBalance ?? "0.00";
      const userUsdcBalance = solanaData?.userUsdcBalance ?? "0.00";
      const userNfts = solanaData?.userNfts ?? [];
@@ -69,12 +68,12 @@ const StakingClaimPage = () => {
      const myStakeInfo = solanaData?.myStakeInfo;
 
 
-    // --- 버튼 핸들러 (Pubkey 함수 호출로 수정) ---
+    // --- Button handlers (modified to call Pubkey functions) ---
     const handleStake = useCallback(async () => {
         const currentNfts = solanaData?.userNfts ?? [];
-        // 프로그램 및 키 로드 확인
+        // Check program and key loading
         if (!publicKey || isLoading || isStaked || currentNfts.length === 0 || !stakingProgram || !provider || !revenueEngineProgram) return;
-        // 필요한 Pubkey 함수 호출
+        // Call required Pubkey functions
         const demoNftMintAddr = getDemoNftMint();
         const revenueEnginePDAAddr = getRevenueEnginePDA();
         const stakingProgramIdVal = getStakingProgramId();
@@ -85,15 +84,15 @@ const StakingClaimPage = () => {
         try {
             const [nftStakePDA, _stakeBump] = PublicKey.findProgramAddressSync(
                 [Buffer.from("nft_stake"), publicKey.toBuffer(), demoNftMintAddr.toBuffer()],
-                stakingProgramIdVal // 변수 사용
+                stakingProgramIdVal // Use variable
             );
             const accounts = {
                 userWallet: publicKey,
-                nftMint: demoNftMintAddr, // 변수 사용
-                engineState: revenueEnginePDAAddr, // 변수 사용
-                revenueEngineProgram: revenueEngineProgramIdVal, // 변수 사용
+                nftMint: demoNftMintAddr, // Use variable
+                engineState: revenueEnginePDAAddr, // Use variable
+                revenueEngineProgram: revenueEngineProgramIdVal, // Use variable
                 nftStakeState: nftStakePDA,
-                stakingProgramExecutable: stakingProgramIdVal, // 변수 사용
+                stakingProgramExecutable: stakingProgramIdVal, // Use variable
                 systemProgram: SystemProgram.programId,
                 rent: anchor.web3.SYSVAR_RENT_PUBKEY,
                 tokenProgram: TOKEN_PROGRAM_ID,
@@ -111,12 +110,12 @@ const StakingClaimPage = () => {
             updateLogs(`Stake failed: ${error.message || error.toString()}`, 'error');
             if (error instanceof Error && 'logs' in error) console.error("Logs:", (error as any).logs);
         } finally { setIsLoading(false); }
-    }, [publicKey, isLoading, isStaked, solanaData, stakingProgram, provider, connection, refetchData, updateLogs, revenueEngineProgram]); // solanaData 추가
+    }, [publicKey, isLoading, isStaked, solanaData, stakingProgram, provider, connection, refetchData, updateLogs, revenueEngineProgram]); // Added solanaData
 
     const handleUnstake = useCallback(async () => {
-        // 프로그램 및 키 로드 확인
+        // Check program and key loading
         if (!publicKey || isLoading || !isStaked || !stakingProgram || !provider || !revenueEngineProgram || !sendTransaction || !myStakeInfo) return;
-        // 필요한 Pubkey 함수 호출
+        // Call required Pubkey functions
         const demoNftMintAddr = getDemoNftMint();
         const revenueEnginePDAAddr = getRevenueEnginePDA();
         const haioMintAddr = getHaioMint();
@@ -131,11 +130,11 @@ const StakingClaimPage = () => {
             const nftToUnstake = new PublicKey(myStakeInfo.nftMint);
             const [nftStakePDA, _1] = PublicKey.findProgramAddressSync(
                 [Buffer.from("nft_stake"), publicKey.toBuffer(), nftToUnstake.toBuffer()],
-                stakingProgramIdVal // 변수 사용
+                stakingProgramIdVal // Use variable
             );
             const [rewardPoolAuthorityPDA, _2] = PublicKey.findProgramAddressSync(
                 [Buffer.from("reward_pool_authority_seed")],
-                stakingProgramIdVal // 변수 사용
+                stakingProgramIdVal // Use variable
             );
             const userHaioAta = await getAssociatedTokenAddress(haioMintAddr, publicKey);
             try { await getAccount(connection, userHaioAta); } catch {
@@ -145,14 +144,14 @@ const StakingClaimPage = () => {
                 userWallet: publicKey,
                 nftMint: nftToUnstake,
                 userHaioAccount: userHaioAta,
-                engineState: revenueEnginePDAAddr, // 변수 사용
-                revenueEngineProgram: revenueEngineProgramIdVal, // 변수 사용
+                engineState: revenueEnginePDAAddr, // Use variable
+                revenueEngineProgram: revenueEngineProgramIdVal, // Use variable
                 nftStakeState: nftStakePDA,
-                rewardPoolPda: rewardPoolAtaAddr, // 변수 사용
+                rewardPoolPda: rewardPoolAtaAddr, // Use variable
                 rewardPoolAuthority: rewardPoolAuthorityPDA,
-                stakingProgramExecutable: stakingProgramIdVal, // 변수 사용
+                stakingProgramExecutable: stakingProgramIdVal, // Use variable
                 tokenProgram: TOKEN_PROGRAM_ID,
-                engineStateLoader: revenueEnginePDAAddr, // 변수 사용
+                engineStateLoader: revenueEnginePDAAddr, // Use variable
             };
             transaction.add(
                 await stakingProgram.methods
@@ -172,9 +171,9 @@ const StakingClaimPage = () => {
     }, [publicKey, isLoading, isStaked, myStakeInfo, stakingProgram, provider, connection, refetchData, updateLogs, sendTransaction, revenueEngineProgram]);
 
     const handleClaim = useCallback(async () => {
-        // 프로그램 및 키 로드 확인
+        // Check program and key loading
         if (!publicKey || isLoading || !isStaked || parseFloat(claimableReward) <= 0 || !stakingProgram || !provider || !revenueEngineProgram || !signTransaction || !myStakeInfo) return;
-        // 필요한 Pubkey 함수 호출
+        // Call required Pubkey functions
         const haioMintAddr = getHaioMint();
         const revenueEnginePDAAddr = getRevenueEnginePDA();
         const rewardPoolAtaAddr = getRewardPoolATA();
@@ -187,11 +186,11 @@ const StakingClaimPage = () => {
             const nftMint = new PublicKey(myStakeInfo.nftMint);
             const [nftStakePDA, _1] = PublicKey.findProgramAddressSync(
                 [Buffer.from("nft_stake"), publicKey.toBuffer(), nftMint.toBuffer()],
-                stakingProgramIdVal // 변수 사용
+                stakingProgramIdVal // Use variable
             );
             const [rewardPoolAuthorityPDA, _2] = PublicKey.findProgramAddressSync(
                 [Buffer.from("reward_pool_authority_seed")],
-                stakingProgramIdVal // 변수 사용
+                stakingProgramIdVal // Use variable
             );
             const userHaioAta = await getAssociatedTokenAddress(haioMintAddr, publicKey);
             try { await getAccount(connection, userHaioAta); } catch {
@@ -200,11 +199,11 @@ const StakingClaimPage = () => {
             const accounts = {
                 userWallet: publicKey,
                 userHaioAccount: userHaioAta,
-                engineState: revenueEnginePDAAddr, // 변수 사용
+                engineState: revenueEnginePDAAddr, // Use variable
                 nftStakeState: nftStakePDA,
-                rewardPoolPda: rewardPoolAtaAddr, // 변수 사용
+                rewardPoolPda: rewardPoolAtaAddr, // Use variable
                 rewardPoolAuthority: rewardPoolAuthorityPDA,
-                engineStateLoader: revenueEnginePDAAddr, // 변수 사용
+                engineStateLoader: revenueEnginePDAAddr, // Use variable
                 tokenProgram: TOKEN_PROGRAM_ID,
             };
             transaction.add(
@@ -231,28 +230,28 @@ const StakingClaimPage = () => {
     }, [publicKey, isLoading, isStaked, claimableReward, myStakeInfo, stakingProgram, provider, connection, refetchData, updateLogs, revenueEngineProgram, signTransaction]);
 
     const handleSimulateRevenue = useCallback(async () => {
-        // 지갑 연결 여부만 체크 (USDC 잔액 불필요)
+        // Only check wallet connection (USDC balance not required)
         if (!publicKey || isLoading) return alert("Wallet not connected or processing.");
         const amountInput = document.getElementById('usdcAmount') as HTMLInputElement;
-        const amountDecimal = parseFloat(amountInput.value); // 입력값을 숫자로
+        const amountDecimal = parseFloat(amountInput.value); // Convert input value to number
         if (isNaN(amountDecimal) || amountDecimal <= 0) return alert("Enter valid USDC amount.");
 
-        // 입력값을 Lamports 단위로 변환
+        // Convert input value to Lamports units
         const amountLamports = BigInt(Math.round(amountDecimal * (10**USDC_DECIMALS)));
 
         updateLogs(`Requesting revenue simulation (${amountDecimal} USDC) via API...`, 'process');
         setIsLoading(true);
         try {
-            // 백엔드 API 호출
+            // Backend API call
             const response = await axios.post(`${apiBaseUrl}/api/simulate-and-run`, {
-                amountLamports: amountLamports.toString() // BigInt는 JSON으로 바로 보내기 어려우므로 문자열로 변환
+                amountLamports: amountLamports.toString() // Convert BigInt to string as it's difficult to send directly as JSON
             });
 
             if (response.data?.success) {
                 updateLogs(`API: ${response.data.message}`, 'success', response.data.transferTxId);
-                // API 호출 성공 후에는 Agent Monitor 페이지에서 진행 상황 확인 유도
+                // After successful API call, guide to check progress on Agent Monitor page
                 updateLogs("Check Agent Monitor page for processing details.", 'info');
-                // 여기서 loadData를 호출할 필요는 없음 (Agent가 처리 후 상태 변경)
+                // No need to call loadData here (Agent changes state after processing)
             } else {
                 throw new Error(response.data?.message || "API request failed");
             }
@@ -263,7 +262,7 @@ const StakingClaimPage = () => {
         } finally {
             setIsLoading(false);
         }
-    // 의존성 간소화
+    // Simplify dependencies
     }, [publicKey, isLoading, usdcAmountToSend, updateLogs]);
 
     const handleTriggerWorkerInfo = () => {
@@ -272,7 +271,7 @@ const StakingClaimPage = () => {
         alert("This button is for information only. Ensure the agent worker script is running.");
     };
 
-    // --- UI 렌더링 (동일) ---
+    // --- UI Rendering (same) ---
     return (
         <div>
             {isLoading && <div className="loading-overlay"><p>Processing...</p></div>}
@@ -284,8 +283,8 @@ const StakingClaimPage = () => {
                 <div className="grid">
                     <InfoCard title="Your $HAiO" description="(My wallet balance)" value={userHaioBalance} unit="HAiO" />
                     <InfoCard title="Your MockUSDC" description="(My wallet balance)" value={userUsdcBalance} unit="USDC" />
-                    {/* 수정: demoNftMint() 호출 */}
-                    <InfoCard title="Demo Agent NFT" description="(For hackathon demonstration)" value={userNfts.length > 0 ? `${getDemoNftMint().toBase58().substring(0,6)}... (${isStaked ? 'Staked' : 'Available'})` : 'Not Found'} />
+                    {/* Modified: demoNftMint() call */}
+                    <InfoCard title="Demo Agent NFT" description="(For testing demonstration)" value={userNfts.length > 0 ? `${getDemoNftMint().toBase58().substring(0,6)}... (${isStaked ? 'Staked' : 'Available'})` : 'Not Found'} />
                 </div>
             </div>
 

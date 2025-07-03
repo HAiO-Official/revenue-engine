@@ -49,8 +49,8 @@ pub mod mock_swap_program {
                 ctx.accounts.token_program.to_account_info(),
                 Transfer {
                     from: ctx.accounts.user_usdc_account.to_account_info(),
-                    to: ctx.accounts.admin_usdc_vault.to_account_info(), // Admin의 Vault
-                    authority: ctx.accounts.user_or_op_wallet.to_account_info(), // OpW 서명
+                    to: ctx.accounts.admin_usdc_vault.to_account_info(), // Admin's Vault
+                    authority: ctx.accounts.user_or_op_wallet.to_account_info(), // OpW signature
                 },
             ),
             amount_in,
@@ -65,9 +65,9 @@ pub mod mock_swap_program {
             CpiContext::new(
                 ctx.accounts.token_program.to_account_info(),
                 Transfer {
-                    from: ctx.accounts.admin_haio_vault.to_account_info(), // Admin의 Vault
+                    from: ctx.accounts.admin_haio_vault.to_account_info(), // Admin's Vault
                     to: ctx.accounts.user_haio_account.to_account_info(),
-                    authority: ctx.accounts.admin.to_account_info(), // Admin 서명
+                    authority: ctx.accounts.admin.to_account_info(), // Admin signature
                 },
             ),
             amount_out,

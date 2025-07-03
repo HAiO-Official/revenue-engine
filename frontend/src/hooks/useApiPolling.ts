@@ -11,8 +11,8 @@ export interface AgentLog {
 }
 
 export interface AgentStatus {
-    status: 'IDLE' | 'PROCESSING' | 'ERROR' | string; // 더 구체적인 상태 추가 가능
-    current_step?: 'SWAPPING' | 'BURNING' | 'TRANSFERRING' | 'DISTRIBUTING' | string; // 현재 단계
+    status: 'IDLE' | 'PROCESSING' | 'ERROR' | string; // More specific status can be added
+    current_step?: 'SWAPPING' | 'BURNING' | 'TRANSFERRING' | 'DISTRIBUTING' | string; // Current step
     op_usdc_balance: number; 
     op_haio_balance: number;
     op_ath_balance: number;
@@ -41,7 +41,7 @@ export const useApiPolling = (intervalMs: number = 3000) => {
         try {
             const [statusRes, logsRes] = await Promise.allSettled([
                 axios.get<AgentStatus>(`${apiBaseUrl}/api/agent-status`),
-                axios.get<AgentLog[]>(`${apiBaseUrl}/api/agent-logs?limit=50`) // API가 최신순 정렬 가정
+                axios.get<AgentLog[]>(`${apiBaseUrl}/api/agent-logs?limit=50`) // Assume API returns latest first
             ]);
 
             if (statusRes.status === 'fulfilled') {
@@ -53,9 +53,9 @@ export const useApiPolling = (intervalMs: number = 3000) => {
             }
 
             if (logsRes.status === 'fulfilled' && Array.isArray(logsRes.value.data)) {
-                // API 응답(AgentLog[])을 받아서 HTML 문자열 배열로 변환
+                // Convert API response (AgentLog[]) to HTML string array
                 const newFormattedLogs = logsRes.value.data.map(formatLogEntry);
-                setFormattedLogs(newFormattedLogs); // 상태 업데이트
+                setFormattedLogs(newFormattedLogs); // Update state
             } else {
                 console.warn("Failed to fetch agent logs:", logsRes);
                 setError(prev => prev ? `${prev} & Failed to fetch logs.` : "Failed to fetch logs.");

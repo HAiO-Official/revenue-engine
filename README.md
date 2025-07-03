@@ -75,7 +75,7 @@ This project focuses on demonstrating the core economic loop:
 ## 🏗️ Project Structure (Key Components)
 
 ```
-HAiO-Seoulana/
+revenue-engine/
 ├── programs/                # Solana Smart Contracts (Anchor)
 │   ├── revenue_engine/      # Core distribution logic & EngineState Account
 │   ├── staking_program/     # NFT staking & reward claim logic (NftStakeState)
@@ -104,8 +104,8 @@ HAiO-Seoulana/
 ### Getting Started (FOR LOCAL / Using solana-test-validator)
 1. **Clone & Install:**
    ```
-   git clone https://github.com/cto-haio/HAiO-Seoulana.git
-   cd HAiO-Seoulana
+   git clone https://github.com/HAiO-Official/revenue-engine.git
+   cd revenue-engine
    yarn install
    ```
 

@@ -1,3 +1,10 @@
+[![MOVED](https://img.shields.io/badge/STATUS-MOVED-blue?style=for-the-badge)](https://github.com/HAiO-labs/HAiO-revenue-engine)
+
+# 🚚 This repository is no longer updated.
+👉 **Active development has moved to [`HAiO-revenue-engine`](https://github.com/HAiO-labs/HAiO-revenue-engine).**
+
+---
+
 <p align="center">
   <a href="https://haio.fun" target="_blank">
     <img src="https://r2.assets.haio.fun/haio-logo.png" width="200" alt="HAiO Logo">
